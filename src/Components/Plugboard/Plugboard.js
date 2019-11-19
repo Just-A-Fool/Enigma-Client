@@ -1,29 +1,77 @@
 import React from 'react';
 
-export default class Rotors extends React.Component {
+export default class Plugboard extends React.Component {
+    state = {
+        picked: [],
+        wires: new Array(10).fill(['', ''])
+    }
+
+    changeWire = async (event, i, j) => {
+        let newArray = [...this.state.wires];
+        let newRow = [...newArray[i]];
+        newRow[j] = event.target.value;
+        newArray[i] = newRow;
+        
+        let newPicked = [...this.state.picked]
+        newPicked.push(event.target.value)
+        newPicked.forEach((pickedLetter, index) => {
+            let pickedBool = false;
+            newArray.forEach(row => {
+                row.forEach(column => {
+                    if(column === pickedLetter) {
+                        pickedBool = true;
+                    }
+                    if(pickedLetter === '') {
+                        pickedBool = false;
+                    }
+                })
+            })
+            if(!pickedBool) {
+                newPicked.splice(index, 1);
+            }
+        })
+        console.log(newPicked)
+
+        console.log(event.target)
+        await this.setState({
+            picked: newPicked,
+            wires: newArray
+        })
+
+        this.props.handlePlugboardInput(this.state.wires);
+    }
+
     render() {
+        const alphabet = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ').split('');
+        let filtered = alphabet.filter(letter => !this.state.picked.includes(letter));
+        filtered.splice(0, 0, '');
+        //console.log(this.state.wires)
+        let wires = [];
+        for (let i = 0; i < 10; i++) {
+            wires.push(
+                <div key={i} className="plugboard">
+                    <select key={`${i}0`} className="plug-input" value={this.state.wires[i][0]} onChange={(event) => this.changeWire(event, i, 0)}>
+                        <option key={'none'} value={this.state.wires[i][0]}>{this.state.wires[i][0]}</option>
+                        {filtered.map(letter => <option key={letter} value={letter}>{letter}</option>)}
+                    </select>
+                    <span>:</span>
+                    <select key={`${i}1`} className="plug-input" value={this.state.wires[i][1]} onChange={(event) => this.changeWire(event, i, 1)}>
+                        <option key={'none'} value={this.state.wires[i][1]}>{this.state.wires[i][1]}</option>
+                        {filtered.map(letter => <option key={letter} value={letter}>{letter}</option>)}
+                    </select>
+                </div>
+            );
+        }
         return (
             <div>
                 <p>Plug-board</p>
                 <div className="plugboard-container">
                     <div className="pTop">
-                        <div className="plugboard">
-                            <input type="text" className="plug-input" />
-                            <span>:</span>
-                            <input type="text" className="plug-input" />
-                        </div>
-                        <div className="plugboard">
-                            <input type="text" className="plug-input" />
-                            <span>:</span>
-                            <input type="text" className="plug-input" />
-                        </div>
-                        <div className="plugboard">
-                            <input type="text" className="plug-input" />
-                            <span>:</span>
-                            <input type="text" className="plug-input" />
-                        </div>
+                        {wires}
+
+
                     </div>
-                    <div className="pBottom">
+                    {/* <div className="pBottom">
                         <div className="plugboard">
                             <input type="text" className="plug-input" />
                             <span>:</span>
@@ -34,7 +82,7 @@ export default class Rotors extends React.Component {
                             <span>:</span>
                             <input type="text" className="plug-input" />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         );

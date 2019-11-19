@@ -62,33 +62,6 @@ class Enigma extends React.Component {
   }
 
   /*
-  Takes in object from Rotors component. 
-  This changes the state of the Enigma to allow one to change the default shift and which rotor to use.
-  In real life this represents configuring the Enigma with the initial settings not including the plugboard. 
-  */
-  changeRotors = (rotors) => {
-    let newRotors = [];
-    //Factory loop here creating objects to set the state equal to. 
-    for (let i = 1; i <= 3; i++) {
-      //An easy way to refer to which rotor for the purpose of acessing correct info.
-      let currentRotor = [`rotor${i}`]
-      newRotors.push({
-        //The substituion cipher and turnover live in the allRotors object.
-        //[rotors[currentRotor].which] returns a key on allRotors representing which rotor picked.
-        cipher: allRotors[rotors[currentRotor].which].cipher.split(''),
-        turnover: allRotors[rotors[currentRotor].which].turnover,
-        defaultShift: parseInt(rotors[currentRotor].shift),
-      })
-    }
-
-    this.setState({
-      rotor1: newRotors[0],
-      rotor2: newRotors[1],
-      rotor3: newRotors[2]
-    })
-  }
-
-  /*
   Allows real-time encryption/decryption. 
   Takes input and runs it through either the encode or decode methods.
   This was not an option on the original Enigma Machine but it helps with user experience.
@@ -106,11 +79,16 @@ class Enigma extends React.Component {
     })
   }
 
+  /*
+  This method allows users to switch between encoding and decoding a message.
+  */
   switchModes = () => {
     this.setState({
       encrypt: !this.state.encrypt
     });
   }
+
+
 
 
 
@@ -191,6 +169,33 @@ class Enigma extends React.Component {
     return;
   }
 
+  /*
+  Takes in object from Rotors component. 
+  This changes the state of the Enigma to allow one to change the default shift and which rotor to use.
+  In real life this represents configuring the Enigma with the initial settings not including the plugboard. 
+  */
+  changeRotors = (rotors) => {
+    let newRotors = [];
+    //Factory loop here creating objects to set the state equal to. 
+    for (let i = 1; i <= 3; i++) {
+      //An easy way to refer to which rotor for the purpose of acessing correct info.
+      let currentRotor = [`rotor${i}`]
+      newRotors.push({
+        //The substituion cipher and turnover live in the allRotors object.
+        //[rotors[currentRotor].which] returns a key on allRotors representing which rotor picked.
+        cipher: allRotors[rotors[currentRotor].which].cipher.split(''),
+        turnover: allRotors[rotors[currentRotor].which].turnover,
+        defaultShift: parseInt(rotors[currentRotor].shift),
+      })
+    }
+
+    this.setState({
+      rotor1: newRotors[0],
+      rotor2: newRotors[1],
+      rotor3: newRotors[2]
+    })
+  }
+
   /* 
   Rotor Methods
   ----------------------------------------------------------------------------------------------------------------------------------------
@@ -223,6 +228,28 @@ class Enigma extends React.Component {
     if (!found) {
       return letter;
     } else return found;
+  }
+
+  /*
+  This method takes in input from the Plugboard component in the form of a multidimensional array
+  It checks for pairs in said array and makes key/value pairs of them to put in the state
+  On a real Enigma Machine this would allow electricity to flow through the wires on the plugboard
+  essentially substituting one letter for another when entering and exiting the machine. 
+  */
+  handlePlugboardInput = (multiArray) => {
+    let plugObj = {};
+
+    //Looks at each element in the array, each element is another array of length 2
+    multiArray.forEach(row => {
+      //If there are valid inputs for both elements in the row make a key/value pair on plugObj
+      if(row[0]&&row[1]) {
+        plugObj[row[0]] = row[1]
+      }
+    })
+
+    this.setState({
+      plugBoard: plugObj
+    })
   }
 
   /* 
@@ -372,19 +399,20 @@ class Enigma extends React.Component {
     return (
       <div>
         <button onClick={() => this.encode("hello you person, i'm a decoded message!")}>Encode</button>
-        <button onClick={() => this.decode("TRQWE JCVM UV XSIIBPS")}>decode</button>
+        {/* 4:4, 5:5, 1:1 | H:L, W:B, E:O */}
+        <button onClick={() => this.decode("QWKWM LQNJ JENSQ")}>decode</button>
         <button onClick={() => console.log(alphabet.indexOf('K'))}>Empty String</button>
         <button onClick={() => this.encode("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")}>test rotate</button>
         <h1>Enigma</h1>
         <div id="setup-container">
           <Rotors changeRotors={this.changeRotors} />
-          <Plugboard />
+          <Plugboard handlePlugboardInput={this.handlePlugboardInput} />
         </div>
         <div id="text-encryption">
           <textarea id="input" placeholder="Input" onChange={(e) => this.handleInput(e.target.value)}></textarea>
           <textarea id="output" placeholder="Output" value={this.state.code} readOnly></textarea>
         </div>
-        <button onClick={this.switchModes}>{this.state.encrypt ? 'Encrypt Mode':'Decrypt Mode' }</button>
+        <button onClick={this.switchModes}>{this.state.encrypt ? 'Encrypt Mode' : 'Decrypt Mode'}</button>
         <button onClick={() => {
           let body = this.serialize();
           enigmaApiService.saveCipher(body);
