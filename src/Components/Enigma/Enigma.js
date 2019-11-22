@@ -1,7 +1,8 @@
 import React from 'react';
-import Rotors from '../Rotors/Rotors';
-import Plugboard from '../Plugboard/Plugboard';
+import Rotors from './Rotors/Rotors';
+import Plugboard from './Plugboard/Plugboard';
 import enigmaApiService from '../../Services/enigma-api-service';
+import tokenService from '../../Services/token-service';
 
 const alphabet = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ').split('');
 const allRotors = {
@@ -30,33 +31,40 @@ const allRotors = {
 class Enigma extends React.Component {
   state = {
     rotor1: {
-      cipher: ('EKMFLGDQVZNTOWYHXUSPAIBRCJ').split(''),
+      cipher: [],
       defaultShift: 0,
-      shift: 0,
-      turnover: 17
+      turnover: 0
     },
     rotor2: {
-      cipher: ('AJDKSIRUXBLHWTMCQGZNPYFVOE').split(''),
+      cipher: [],
       defaultShift: 0,
-      shift: 0,
-      turnover: 5
+      turnover: 0
     },
     rotor3: {
-      cipher: ('BDFHJLCPRTXVZNYEIWGAKMUSQO').split(''),
+      cipher: [],
       defaultShift: 0,
-      shift: 0,
-      turnover: 22
+      turnover: 0
     },
     reflector: {
       cipher: ('EJMZALYXVBWFCRQUONTSPIKHGD').split(''),
       shift: 0
     },
-    plugBoard: {
-      'A': 'D',
-      // 'Q': 'Z',
-      // 'H': 'U',
-      // 'O': 'M'
+    export: {
+      rotor1: {
+        which: 'I',
+        shift: 0,
+      },
+      rotor2: {
+        which: 'II',
+        shift: 0,
+      },
+      rotor3: {
+        which: 'III',
+        shift: 0,
+      },
+      plug: {}
     },
+    plugBoard: {},
     code: '',
     encrypt: true
   }
@@ -94,14 +102,20 @@ class Enigma extends React.Component {
 
 
   serialize = () => {
-    return JSON.stringify(this.state);
+    // return JSON.stringify(this.state);
+    let exportObj = { ...this.state.export };
+    enigmaApiService.saveCipher(JSON.stringify(exportObj));
+
   }
 
 
 
 
 
-
+  handleDefault = async (obj) => {
+    await this.changeRotors(obj);
+    await this.plugboardDefault(obj.plug);
+  }
 
 
 
@@ -192,8 +206,24 @@ class Enigma extends React.Component {
     this.setState({
       rotor1: newRotors[0],
       rotor2: newRotors[1],
-      rotor3: newRotors[2]
+      rotor3: newRotors[2],
+      export: {
+        rotor1: rotors.rotor1,
+        rotor2: rotors.rotor2,
+        rotor3: rotors.rotor3,
+        plug: this.state.export.plug
+      }
     })
+  }
+
+  handleRotorsComponent = async (rotorName, newRotor) => {
+    await this.setState({
+      export: {
+        ...this.state.export,
+        [rotorName]: newRotor
+      }
+    })
+    this.changeRotors(this.state.export);
   }
 
   /* 
@@ -242,13 +272,27 @@ class Enigma extends React.Component {
     //Looks at each element in the array, each element is another array of length 2
     multiArray.forEach(row => {
       //If there are valid inputs for both elements in the row make a key/value pair on plugObj
-      if(row[0]&&row[1]) {
+      if (row[0] && row[1]) {
         plugObj[row[0]] = row[1]
       }
     })
 
     this.setState({
-      plugBoard: plugObj
+      plugBoard: plugObj,
+      export: {
+        ...this.state.export,
+        plug: plugObj
+      }
+    })
+  }
+
+  plugboardDefault = (obj) => {
+    this.setState({
+      plugBoard: obj,
+      export: {
+        ...this.state.export,
+        plug: obj
+      }
     })
   }
 
@@ -395,6 +439,15 @@ class Enigma extends React.Component {
     return newWord;
   }
 
+
+  componentDidMount = () => {
+    if (this.props.default) {
+      this.handleDefault(this.props.default);
+    } else {
+      this.handleDefault(this.state.export);
+    }
+  }
+
   render() {
     return (
       <div>
@@ -405,8 +458,8 @@ class Enigma extends React.Component {
         <button onClick={() => this.encode("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")}>test rotate</button>
         <h1>Enigma</h1>
         <div id="setup-container">
-          <Rotors changeRotors={this.changeRotors} />
-          <Plugboard handlePlugboardInput={this.handlePlugboardInput} />
+          <Rotors handleRotorsComponent={this.handleRotorsComponent} export={this.state.export} />
+          <Plugboard handlePlugboardInput={this.handlePlugboardInput} export={this.props.default}/>
         </div>
         <div id="text-encryption">
           <textarea id="input" placeholder="Input" onChange={(e) => this.handleInput(e.target.value)}></textarea>
@@ -414,9 +467,13 @@ class Enigma extends React.Component {
         </div>
         <button onClick={this.switchModes}>{this.state.encrypt ? 'Encrypt Mode' : 'Decrypt Mode'}</button>
         <button onClick={() => {
-          let body = this.serialize();
-          enigmaApiService.saveCipher(body);
+          this.serialize();
+          //enigmaApiService.saveCipher(body);
         }}>Serialize</button>
+        <button onClick={() => {
+          tokenService.clearToken();
+          this.props.history.push('/login');
+        }}>Logout</button>
       </div>
     );
   }

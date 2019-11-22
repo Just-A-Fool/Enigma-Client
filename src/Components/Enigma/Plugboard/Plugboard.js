@@ -11,34 +11,51 @@ export default class Plugboard extends React.Component {
         let newRow = [...newArray[i]];
         newRow[j] = event.target.value;
         newArray[i] = newRow;
-        
+
         let newPicked = [...this.state.picked]
         newPicked.push(event.target.value)
         newPicked.forEach((pickedLetter, index) => {
             let pickedBool = false;
             newArray.forEach(row => {
                 row.forEach(column => {
-                    if(column === pickedLetter) {
+                    if (column === pickedLetter) {
                         pickedBool = true;
                     }
-                    if(pickedLetter === '') {
+                    if (pickedLetter === '') {
                         pickedBool = false;
                     }
                 })
             })
-            if(!pickedBool) {
+            if (!pickedBool) {
                 newPicked.splice(index, 1);
             }
         })
-        console.log(newPicked)
 
-        console.log(event.target)
         await this.setState({
             picked: newPicked,
             wires: newArray
         })
 
         this.props.handlePlugboardInput(this.state.wires);
+    }
+
+    componentDidMount= async () => {
+        let setup = [...this.state.wires];
+        let rows = [];
+        if(this.props.export) {
+            Object.keys(this.props.export.plug).forEach(key => {
+                rows.push([key, this.props.export.plug[key]]);
+            })
+    
+            for(let i = 0; i< rows.length; i++) {
+                setup[i] = rows[i];
+            }
+    
+            await this.setState({
+                wires: setup
+            })
+            this.props.handlePlugboardInput(this.state.wires)
+        }
     }
 
     render() {
@@ -66,11 +83,11 @@ export default class Plugboard extends React.Component {
             <div>
                 <p>Plug-board</p>
                 <div className="plugboard-container">
-                    <div className="pTop">
-                        {wires}
+
+                    {wires}
 
 
-                    </div>
+
                     {/* <div className="pBottom">
                         <div className="plugboard">
                             <input type="text" className="plug-input" />

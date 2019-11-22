@@ -1,13 +1,141 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+* {
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#log-in-form, #sign-up-form {
+  background-color: rgb(179, 179, 179);
+  text-align: center;
+  padding:20px;
+  border-radius: 5px;
+  margin-top: 15%;
+}
+
+legend {
+  text-align: center;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
+
+label {
+  display: inline-block;
+}
+
+input {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#sign-up-link {
+background-color: rgb(143, 143, 143);   
+padding:10px;
+text-align: center;
+}
+
+p {
+  margin: 0;
+}
+
+#guest-button {
+  display: inline-block;
+  width: 100%;
+  height: 50px;
+  margin: 0, auto;
+}
+
+#navbar {
+  display: fixed;
+  margin:0;
+  background-color: slategrey;
+  padding: 0, 10px;
+}
+
+#nav-flex {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-button {
+  width: 30%;
+  font-size: 1rem;
+}
+
+.all-rotors {
+  /* border: 1px blue solid; */
+  /* width: 24%; */
+  display: flex;
+}
+
+.rotor {
+  /* border: 1px red solid; */
+  width: 40px;
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.rotor-index {
+  width: 35px;
+}
+
+#input, #output {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 20px;
+}
+
+#text-encryption {
+  margin: 25px auto 0;
+  width: 75%;
+  /* border: 1px red solid; */
+}
+
+#setup-container {
+  display: flex;
+  /* height: 50px; */
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  text-align: center;
+}
+
+.plugboard-container {
+  display: block;
+}
+
+.plugboard {
+  width: 32%;
+  /* border: pink 1px solid; */
+  display: inline-block;
+}
+
+.plug-input {
+  width:34%;
+  display: inline-block;
+  
+}
+
+.pTop {
+  width: 100%;
+  height: 24px;
+  display: block;
+}
+
+.pBottom {
+  margin: 0 auto;
+}
+
+.setting-li {
+  border:1px solid black;
+  width:49%;
+  display: inline-block;
+
+}
+
+h1 {
+  text-align: center;
 }
