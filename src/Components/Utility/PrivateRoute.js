@@ -8,6 +8,7 @@ export default function PrivateRoute({component, setEnigma, ...props}) {
         <Route
             {...props}
             render={componentProps => (
+                //Checks to see if logged in. If not logged in goes to login page
                 tokenService.hasToken() ? <Component {...componentProps} default={setEnigma} />
                     : <Redirect to={{
                         pathname: '/login',

@@ -9,6 +9,7 @@ export default function LoggedInNav(props) {
                 <button className="nav-button" onClick={() => props.history.push('/ciphers')}>Saved Ciphers</button>
                 <button className="nav-button" onClick={() => props.history.push('/help')}>Help</button>
                 <button className="nav-button" onClick={() => {
+                    //On logout get rid of Token and go to login page
                     tokenService.clearToken();
                     props.history.push('/login');
                 }}>Log Out</button>

@@ -8,6 +8,7 @@ export default function PrivateRoute({ component, ...props }) {
         <Route
             {...props}
             render={componentProps => (
+                //Checks to see if logged in. If logged in goes to Enigma
                 tokenService.hasToken()
                     ? <Redirect to={'/'} />
                     : <Component {...componentProps} />

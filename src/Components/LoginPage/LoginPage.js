@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import enigmaApiService from '../../Services/enigma-api-service';
 
-
-
 export default class LoginPage extends React.Component {
 
     state = {
@@ -21,23 +19,24 @@ export default class LoginPage extends React.Component {
 
         enigmaApiService.login(JSON.stringify(form), this.props.history)
             .then(res => {
+                //Only way for res to have a message key is if there was an error.
                 if (res.message) {
                     this.setState({
                         error: res.message
                     });
                 } 
             });
-
     }
 
     render() {
-
         return (
             <div className='LS-page'>
                 <div id='login-form-container'>
+                    {/* Sets error back to null after user changes log-in info to give some feedback. */}
                     <form id="log-in-form" onSubmit={(event) => this.handleSubmit(event)} onChange={() => this.setState({error: null})}>
                         <legend>Log In</legend>
 
+                        {/* If there is an error it will show up here. */}
                         {this.state.error ? <div className='error-box'>{this.state.error}</div> : ''}
 
                         <label htmlFor="username">Username</label>

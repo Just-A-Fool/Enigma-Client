@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function FakeRotor(props) {
+    //Designed to mock a rotor but has no functionality 
     return (
         <div key ={props.data.which} className="rotor">
             <select className='rotor-select' name="rotor1" id="rotor1" value={props.data.which} readOnly>

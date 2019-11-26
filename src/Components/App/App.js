@@ -18,7 +18,7 @@ export default class App extends React.Component {
     setEnigma = (enigmaExport) => {
         this.setState({
             enigmaDefault: enigmaExport
-        })
+        });
     }
 
     render() {
@@ -37,41 +37,43 @@ export default class App extends React.Component {
                         />
                     </Switch>
                 </header>
-                <Switch>
-                    <PrivateRoute
-                        exact
-                        path={'/'}
-                        setEnigma={this.state.enigmaDefault}
-                        component={Enigma}
-                    />
-                    <PrivateRoute
-                        exact
-                        path={'/ciphers'}
-                        setEnigma={this.setEnigma}
-                        component={SavedCiphers}
-                    />
-                    <PrivateRoute
-                        path={'/help'}
-                        component={Help}
-                    />
-                    <PublicRoute
-                        path={'/signup'}
-                        component={SignupPage}
-                    />
-                    <PublicRoute
-                        path={'/login'}
-                        component={LoginPage}
-                    />
-                    <PublicRoute
-                        exact
-                        path={'/guest'}
-                        component={Enigma}
-                    />
-                    <PublicRoute
-                        path={'/guest/help'}
-                        component={Help}
-                    />
-                </Switch>
+                <main>
+                    <Switch>
+                        <PrivateRoute
+                            exact
+                            path={'/'}
+                            setEnigma={this.state.enigmaDefault}
+                            component={Enigma}
+                        />
+                        <PrivateRoute
+                            exact
+                            path={'/ciphers'}
+                            setEnigma={this.setEnigma}
+                            component={SavedCiphers}
+                        />
+                        <PrivateRoute
+                            path={'/help'}
+                            component={Help}
+                        />
+                        <PublicRoute
+                            path={'/signup'}
+                            component={SignupPage}
+                        />
+                        <PublicRoute
+                            path={'/login'}
+                            component={LoginPage}
+                        />
+                        <PublicRoute
+                            exact
+                            path={'/guest'}
+                            component={Enigma}
+                        />
+                        <PublicRoute
+                            path={'/guest/help'}
+                            component={Help}
+                        />
+                    </Switch>
+                </main>
             </div>
         );
     }

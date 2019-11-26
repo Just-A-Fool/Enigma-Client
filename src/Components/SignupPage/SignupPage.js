@@ -12,6 +12,7 @@ export default class SignupPage extends React.Component {
         event.preventDefault();
         let e = event.target;
 
+        //If the passwords dont match
         if (e.password.value !== e.secondPassword.value) {
             this.setState({ error: 'Passwords must match.' })
         } else {
@@ -24,6 +25,7 @@ export default class SignupPage extends React.Component {
 
             enigmaApiService.signup(JSON.stringify(form), this.props.history)
                 .then(res => {
+                    //If there is an error
                     if (res.message) {
                         this.setState({ error: res.message })
                     }
@@ -38,6 +40,7 @@ export default class SignupPage extends React.Component {
                 <div id='signup-form-container'>
                     <form id="sign-up-form" onSubmit={(event) => this.handleSubmit(event)}>
                         <legend>Sign Up</legend>
+                        {/* If an error exists it will show up here */}
                         {this.state.error ? <div className='error-box'>{this.state.error}</div> : ''}
                         <label htmlFor="email">Email</label>
                         <input type="email" id="email" name='email' required />
@@ -61,6 +64,3 @@ export default class SignupPage extends React.Component {
         );
     };
 }
-
-//aedan
-//#Password123

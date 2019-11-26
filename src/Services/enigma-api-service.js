@@ -3,6 +3,8 @@ import tokenService from "./token-service";
 const URL = 'http://localhost:8000';
 
 const enigmaApiService = {
+
+    //api request for signing up
     signup(body, history) {
         let error = null;
         return fetch(`${URL}/signup`, {
@@ -13,22 +15,28 @@ const enigmaApiService = {
             body: body
         })
             .then(res => {
+                //if user was successfully created
                 if (res.status === 201) {
                     enigmaApiService.login(body, history);
                 } else {
+                    //instanciate error obj and parse the json response
                     error = {};
-                    console.log('error')
                     return res.json();
                 }
             })
             .then(res => {
+                //if error is no longer null
                 if (error) {
                     error.message = res.message;
                     return error;
-                } else return {};
+                } 
+                //returns empty obj to signify user being added.
+                else return {};
             })
     },
+    //api request for logging in
     login(body, history) {
+
         let error = null;
         return fetch(`${URL}/login`, {
             method: 'POST',
@@ -44,6 +52,7 @@ const enigmaApiService = {
                 return resp.json();
             })
             .then(resp => {
+                //if no error save the token that was given back and move user to Enigma
                 if (!error) {
                     tokenService.saveToken(resp.auth);
                     history.push('/');
@@ -54,6 +63,8 @@ const enigmaApiService = {
                 }
             })
     },
+
+    //api request for posting a cipher
     saveCipher(body) {
         fetch(`${URL}/cipher`, {
             'method': 'POST',
@@ -64,11 +75,13 @@ const enigmaApiService = {
             'body': body
         })
             .then(res => {
-                console.log(res)
-                console.log(body)
+                if(res.status === 201) {
+                    return {};
+                }
             })
-            .catch(e => console.log(e));
     },
+
+    //api request for getting user's saved ciphers
     getCiphers() {
         return fetch(`${URL}/cipher`, {
             'method': 'GET',
@@ -78,16 +91,16 @@ const enigmaApiService = {
             }
         })
             .then(res => {
-                console.log(res)
                 if (res.ok) {
                     return res.json();
                 } else throw res;
             })
             .then(data => {
-                console.log(data);
                 return data;
             });
     },
+
+    //api request to delete a saved cipher
     deleteCipher(id) {
         return fetch(`${URL}/cipher/${id}`, {
             'method': 'DELETE',
@@ -101,7 +114,7 @@ const enigmaApiService = {
                     return true;
                 } else return false;
             })
-            .catch(e => console.log(e));
+            
     }
 }
 
