@@ -1,5 +1,4 @@
 import React from 'react';
-import tokenService from '../../Services/token-service';
 
 export default function LoggedOutNav(props) {
     return (

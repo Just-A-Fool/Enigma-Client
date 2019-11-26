@@ -4,39 +4,55 @@ const URL = 'http://localhost:8000';
 
 const enigmaApiService = {
     signup(body, history) {
-        fetch(`${URL}/signup`, {
+        let error = null;
+        return fetch(`${URL}/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: body
         })
-        .then(res => {
-            if(res.status === 201) {
-                enigmaApiService.login(body, history);
-            }
-        })
+            .then(res => {
+                if (res.status === 201) {
+                    enigmaApiService.login(body, history);
+                } else {
+                    error = {};
+                    console.log('error')
+                    return res.json();
+                }
+            })
+            .then(res => {
+                if (error) {
+                    error.message = res.message;
+                    return error;
+                } else return {};
+            })
     },
     login(body, history) {
-        fetch(`${URL}/login`, {
+        let error = null;
+        return fetch(`${URL}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: body
         })
-        .then(resp => {
-            if(resp.ok) {
+            .then(resp => {
+                if (!resp.ok) {
+                    error = {};
+                }
                 return resp.json();
-            }
-            return false;
-        })
-        .then(resp => {
-            if(resp) {
-                tokenService.saveToken(resp.auth);
-                history.push('/');
-            }
-        })
+            })
+            .then(resp => {
+                if (!error) {
+                    tokenService.saveToken(resp.auth);
+                    history.push('/');
+                    return {};
+                } else {
+                    error.message = resp.message;
+                    return error;
+                }
+            })
     },
     saveCipher(body) {
         fetch(`${URL}/cipher`, {
@@ -47,8 +63,11 @@ const enigmaApiService = {
             },
             'body': body
         })
-        .then()
-        .catch(e => console.log(e));
+            .then(res => {
+                console.log(res)
+                console.log(body)
+            })
+            .catch(e => console.log(e));
     },
     getCiphers() {
         return fetch(`${URL}/cipher`, {
@@ -58,16 +77,16 @@ const enigmaApiService = {
                 'Authorization': `Bearer ${tokenService.getToken()}`
             }
         })
-        .then(res => {
-            console.log(res)
-            if(res.ok) {
-                return res.json();
-            } else throw res;
-        })
-        .then(data => {
-            console.log(data);
-            return data;
-        });
+            .then(res => {
+                console.log(res)
+                if (res.ok) {
+                    return res.json();
+                } else throw res;
+            })
+            .then(data => {
+                console.log(data);
+                return data;
+            });
     },
     deleteCipher(id) {
         return fetch(`${URL}/cipher/${id}`, {
@@ -77,12 +96,12 @@ const enigmaApiService = {
                 'Authorization': `Bearer ${tokenService.getToken()}`
             }
         })
-        .then(res => {
-            if(res.status === 204) {
-                return true;
-            } else return false;
-        })
-        .catch(e => console.log(e));
+            .then(res => {
+                if (res.status === 204) {
+                    return true;
+                } else return false;
+            })
+            .catch(e => console.log(e));
     }
 }
 

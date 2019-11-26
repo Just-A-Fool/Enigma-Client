@@ -11,7 +11,11 @@ export default class Rotors extends React.Component {
     changeShift = async (event, rotorName) => {
         let newRotor = {...this.props.export[rotorName], shift: event.target.value};
         
-        this.props.handleRotorsComponent(rotorName, newRotor)
+
+        //if value is not within range set error on state
+        if(!(event.target.value > 25 || event.target.value < 0 || !event.target.value)) {
+            this.props.handleRotorsComponent(rotorName, newRotor)
+        }
     }
 
     render() {
@@ -23,7 +27,7 @@ export default class Rotors extends React.Component {
             let rotor = `rotor${i}`;
             rotors.push(
                 <div className="rotor" key={i}>
-                    <select name={rotor} id={rotor} onChange={(e) => this.changeRotor(e, rotor)}>
+                    <select className='rotor-select' name={rotor} id={rotor} onChange={(e) => this.changeRotor(e, rotor)}>
                         <option key={this.props.export[rotor].which} value={this.props.export[rotor].which}>{this.props.export[rotor].which}</option>
                         {filteredOptions.map(option => <option key={option} value={option}>{option}</option>)}
                     </select>

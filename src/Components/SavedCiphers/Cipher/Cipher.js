@@ -1,7 +1,6 @@
 import React from 'react';
 import FakeRotor from './FakeRotor/FakeRotor';
 import FakeWire from './FakeWire/FakeWire';
-import enigmaApiService from '../../../Services/enigma-api-service';
 
 export default class Cipher extends React.Component {
 
@@ -25,7 +24,7 @@ export default class Cipher extends React.Component {
 
         return (
             <li key={this.props.data.id} className="setting-li">
-                <h2>Name of setting</h2>
+                <h2>Cipher #{this.props.index + 1}</h2>
                 <p>Rotors</p>
                 <div className="all-rotors">
                     {fakeRotors}

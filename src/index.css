@@ -1,5 +1,8 @@
 * {
   box-sizing: border-box;
+  color: white;
+  background-color: #121415;
+  border-color: #636363;
 }
 
 body {
@@ -8,21 +11,41 @@ body {
 }
 
 #log-in-form, #sign-up-form {
-  background-color: rgb(179, 179, 179);
+  background-color: #5c686e;
   text-align: center;
   padding:20px;
-  border-radius: 5px;
+  border-radius: 5px 5px 0 0;
   margin-top: 15%;
+}
+
+#log-in-link, #sign-up-link {
+  border-radius: 0 0 5px 5px ;
+}
+
+#login-form-container, #signup-form-container {
+  margin-bottom: 5px;
+}
+
+.error-box {
+  background-color: #5c686e;
+  color: #360000;
+}
+
+.LS-page {
+  width: 75%;
+  margin: 0 auto;
 }
 
 legend {
   text-align: center;
   font-size: 1.3rem;
   margin-bottom: 20px;
+  background-color: #5c686e;
 }
 
 label {
   display: inline-block;
+  background-color: #5c686e;
 }
 
 input {
@@ -31,14 +54,28 @@ input {
   margin-right: auto;
 }
 
+::placeholder {
+  color: #A3A3A3;
+}
+
 #sign-up-link {
-background-color: rgb(143, 143, 143);   
+background-color: #31373a;   
 padding:10px;
 text-align: center;
 }
 
-p {
-  margin: 0;
+p, select, input, textarea{
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.1rem;
+}
+
+.signup-para {
+  
+  background-color: #31373a;
+}
+
+a {
+  background-color: #31373a;
 }
 
 #guest-button {
@@ -69,23 +106,32 @@ p {
   /* border: 1px blue solid; */
   /* width: 24%; */
   display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  margin-bottom: 10px;
 }
 
 .rotor {
   /* border: 1px red solid; */
-  width: 40px;
+  width: 50px;
   font-size: 1.2rem;
   margin-right: 10px;
 }
 
 .rotor-index {
-  width: 35px;
+  width: 100%;
+  margin:0;
+  border: 1px solid #636363;
+}
+
+.rotor-select {
+  width: 100%;
 }
 
 #input, #output {
   width: 100%;
   height: 200px;
-  margin-bottom: 20px;
+  margin: 10px 0;
 }
 
 #text-encryption {
@@ -105,37 +151,129 @@ p {
 
 .plugboard-container {
   display: block;
+  margin-bottom: 10px;
 }
 
 .plugboard {
-  width: 32%;
+  width: 33%;
   /* border: pink 1px solid; */
   display: inline-block;
 }
 
 .plug-input {
-  width:34%;
+  width:40%;
   display: inline-block;
   
 }
 
-.pTop {
-  width: 100%;
-  height: 24px;
-  display: block;
-}
-
-.pBottom {
-  margin: 0 auto;
+.fake-plug-input {
+  width:43%;
+  display: inline-block;
+  
 }
 
 .setting-li {
-  border:1px solid black;
-  width:49%;
+  border:1px solid #636363;
+  width:100%;
   display: inline-block;
-
+  padding: 10px;
+  text-align: left;
 }
 
 h1 {
   text-align: center;
+  font-family: 'Inconsolata', monospace;
+}
+
+button {
+  color: black;
+  background-color: #17bdff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #1497ca;
+  font-family: 'Inconsolata', monospace;
+  font-weight: bolder;
+  font-size: 1.1rem;
+}
+
+button:hover {
+  background-color: #E67E00;
+  border-color: rgb(175, 97, 2);
+}
+
+ul {
+  padding: 0;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.cipher-list {
+  display: flex;
+  flex-wrap: wrap; 
+}
+
+h2 {
+  margin: 10px;
+  font-family: 'Inconsolata', monospace;
+}
+
+h3 {
+  font-family: 'Inconsolata', monospace;
+}
+
+.switch-modes {
+  margin-left: 25%;
+  margin-right: 25%;
+  width: 50%;
+  display: inline-block;
+  height: 30px;
+}
+
+footer {
+  display: flex;
+  width: 75%;
+  justify-content: flex-end;
+  margin: 0 auto 20px;
+}
+
+#help-page {
+  text-align: center;
+}
+
+
+.help-wire {
+  display: block;
+  margin: 0 auto;
+}
+
+.help-section {
+  width:80%;
+  margin: 0 auto;
+  text-align: left;
+  border-style: solid;
+  border-width: 2px 0px 0px 0px;
+  border-color: #FF8C00;
+}
+
+.help-sub-section {
+  border-style: solid;
+  border-width: 2px 0px 0px 0px;
+  border-color: #17bdff;
+}
+
+#saved-ciphers-page {
+  text-align: center;
+}
+
+
+@media screen and (min-width: 780px) {
+  .setting-li {
+    width:50%;
+  }
+
+  .switch-modes {
+    width:24%;
+    margin-left: 38%;
+    margin-right: 38%;
+  }
 }

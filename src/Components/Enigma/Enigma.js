@@ -2,7 +2,7 @@ import React from 'react';
 import Rotors from './Rotors/Rotors';
 import Plugboard from './Plugboard/Plugboard';
 import enigmaApiService from '../../Services/enigma-api-service';
-import tokenService from '../../Services/token-service';
+import Footer from '../Footer/Footer';
 
 const alphabet = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ').split('');
 const allRotors = {
@@ -65,6 +65,8 @@ class Enigma extends React.Component {
       plug: {}
     },
     plugBoard: {},
+    plugBoardWires: new Array(10).fill(['', '']),
+    plainText: '',
     code: '',
     encrypt: true
   }
@@ -83,6 +85,7 @@ class Enigma extends React.Component {
       output = await this.decode(plainText);
 
     this.setState({
+      plainText: plainText,
       code: output
     })
   }
@@ -90,10 +93,11 @@ class Enigma extends React.Component {
   /*
   This method allows users to switch between encoding and decoding a message.
   */
-  switchModes = () => {
-    this.setState({
+  switchModes = async () => {
+    await this.setState({
       encrypt: !this.state.encrypt
     });
+    this.handleInput(this.state.plainText);
   }
 
 
@@ -104,6 +108,8 @@ class Enigma extends React.Component {
   serialize = () => {
     // return JSON.stringify(this.state);
     let exportObj = { ...this.state.export };
+    console.log(exportObj);
+    console.log(JSON.stringify(exportObj));
     enigmaApiService.saveCipher(JSON.stringify(exportObj));
 
   }
@@ -111,10 +117,35 @@ class Enigma extends React.Component {
 
 
 
+  resetToRefresh = async () => {
+    let refreshObj = {
+      rotor1: {
+        which: 'I',
+        shift: 0,
+      },
+      rotor2: {
+        which: 'II',
+        shift: 0,
+      },
+      rotor3: {
+        which: 'III',
+        shift: 0,
+      },
+      plug: {}
+    }
+    await this.resetPlugWires();
+    this.handleDefault(refreshObj)
+  }
+
+
+
 
   handleDefault = async (obj) => {
     await this.changeRotors(obj);
     await this.plugboardDefault(obj.plug);
+    setTimeout(() => {
+      this.handleInput(this.state.plainText);
+    },200)
   }
 
 
@@ -188,7 +219,7 @@ class Enigma extends React.Component {
   This changes the state of the Enigma to allow one to change the default shift and which rotor to use.
   In real life this represents configuring the Enigma with the initial settings not including the plugboard. 
   */
-  changeRotors = (rotors) => {
+  changeRotors = async (rotors) => {
     let newRotors = [];
     //Factory loop here creating objects to set the state equal to. 
     for (let i = 1; i <= 3; i++) {
@@ -203,7 +234,7 @@ class Enigma extends React.Component {
       })
     }
 
-    this.setState({
+    await this.setState({
       rotor1: newRotors[0],
       rotor2: newRotors[1],
       rotor3: newRotors[2],
@@ -214,6 +245,7 @@ class Enigma extends React.Component {
         plug: this.state.export.plug
       }
     })
+    this.handleInput(this.state.plainText);
   }
 
   handleRotorsComponent = async (rotorName, newRotor) => {
@@ -266,7 +298,7 @@ class Enigma extends React.Component {
   On a real Enigma Machine this would allow electricity to flow through the wires on the plugboard
   essentially substituting one letter for another when entering and exiting the machine. 
   */
-  handlePlugboardInput = (multiArray) => {
+  handlePlugboardInput = async (multiArray) => {
     let plugObj = {};
 
     //Looks at each element in the array, each element is another array of length 2
@@ -277,22 +309,62 @@ class Enigma extends React.Component {
       }
     })
 
-    this.setState({
-      plugBoard: plugObj,
-      export: {
-        ...this.state.export,
-        plug: plugObj
-      }
-    })
+    let plugObjCompare = JSON.stringify(plugObj);
+    let plugBoardCompare = JSON.stringify(this.state.plugBoard);
+    let plugCompare = JSON.stringify(this.state.export.plug);
+
+    if(plugObjCompare !== plugBoardCompare || plugObjCompare !== plugCompare) {
+      await this.setState({
+        plugBoard: plugObj,
+        export: {
+          ...this.state.export,
+          plug: plugObj
+        }
+      })
+      this.handleInput(this.state.plainText)
+    }
+
   }
 
-  plugboardDefault = (obj) => {
+  changePlugboardWire = async (event, i, j) => {
+    let newArray = [...this.state.plugBoardWires];
+    let newRow = [...newArray[i]];
+    newRow[j] = event.target.value;
+    newArray[i] = newRow;
+
+    await this.setState({
+      plugBoardWires: newArray
+    })
+
+    this.handlePlugboardInput(this.state.plugBoardWires);
+  }
+
+  plugboardDefault = async (obj) => {
+    let setup = [...this.state.plugBoardWires];
+    let rows = [];
+
+    Object.keys(obj).forEach(key => {
+      rows.push([key, obj[key]]);
+    })
+
+    for (let i = 0; i < rows.length; i++) {
+      setup[i] = rows[i];
+    }
+
+    await this.setState({
+      plugBoardWires: setup
+    })
+    this.handlePlugboardInput(this.state.plugBoardWires)
+  }
+
+  resetPlugWires = async () => {
     this.setState({
-      plugBoard: obj,
+      plugBoard: {},
       export: {
         ...this.state.export,
-        plug: obj
-      }
+        plug: {}
+      },
+      plugBoardWires : new Array(10).fill(['', ''])
     })
   }
 
@@ -451,29 +523,19 @@ class Enigma extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={() => this.encode("hello you person, i'm a decoded message!")}>Encode</button>
         {/* 4:4, 5:5, 1:1 | H:L, W:B, E:O */}
         <button onClick={() => this.decode("QWKWM LQNJ JENSQ")}>decode</button>
-        <button onClick={() => console.log(alphabet.indexOf('K'))}>Empty String</button>
-        <button onClick={() => this.encode("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")}>test rotate</button>
         <h1>Enigma</h1>
         <div id="setup-container">
           <Rotors handleRotorsComponent={this.handleRotorsComponent} export={this.state.export} />
-          <Plugboard handlePlugboardInput={this.handlePlugboardInput} export={this.props.default}/>
+          <Plugboard export={this.props.default} changeWire={this.changePlugboardWire} wires={this.state.plugBoardWires} />
         </div>
         <div id="text-encryption">
           <textarea id="input" placeholder="Input" onChange={(e) => this.handleInput(e.target.value)}></textarea>
+          <button className='switch-modes' onClick={this.switchModes}>{this.state.encrypt ? 'Encrypt Mode' : 'Decrypt Mode'}</button>
           <textarea id="output" placeholder="Output" value={this.state.code} readOnly></textarea>
         </div>
-        <button onClick={this.switchModes}>{this.state.encrypt ? 'Encrypt Mode' : 'Decrypt Mode'}</button>
-        <button onClick={() => {
-          this.serialize();
-          //enigmaApiService.saveCipher(body);
-        }}>Serialize</button>
-        <button onClick={() => {
-          tokenService.clearToken();
-          this.props.history.push('/login');
-        }}>Logout</button>
+        <Footer refresh={this.resetToRefresh} save={this.serialize} loggedInBool={this.props.location.pathname === '/'} />
       </div>
     );
   }
