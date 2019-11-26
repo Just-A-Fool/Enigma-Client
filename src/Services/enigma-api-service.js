@@ -1,6 +1,6 @@
 import tokenService from "./token-service";
-
-const URL = 'http://localhost:8000';
+import config from '../config';
+const URL = config.URL;
 
 const enigmaApiService = {
 

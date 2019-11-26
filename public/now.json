@@ -1,0 +1,15 @@
+{
+    "version": 2,
+    "alias": "aedan-enigma",
+    "name": "enigma-client",
+    "routes": [
+      {
+        "src": "^/static/(.*)",
+        "dest": "/static/$1"
+      },
+      {
+        "src": ".*",
+        "dest": "/index.html"
+      }
+    ]
+  }
