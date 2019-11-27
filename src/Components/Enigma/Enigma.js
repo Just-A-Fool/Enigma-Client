@@ -91,7 +91,6 @@ class Enigma extends React.Component {
   */
   serialize = () => {
     let exportObj = { ...this.state.export };
-    console.log(JSON.stringify(exportObj));
     enigmaApiService.saveCipher(JSON.stringify(exportObj));
   }
 

@@ -38,7 +38,7 @@ export default class SignupPage extends React.Component {
         return (
             <div className='LS-page'>
                 <div id='signup-form-container'>
-                    <form id="sign-up-form" onSubmit={(event) => this.handleSubmit(event)}>
+                    <form id="sign-up-form" onSubmit={(event) => this.handleSubmit(event)} onChange={() => this.setState({error: null})}>
                         <legend>Sign Up</legend>
                         {/* If an error exists it will show up here */}
                         {this.state.error ? <div className='error-box'>{this.state.error}</div> : ''}
