@@ -26,7 +26,7 @@ export default function Help() {
                     <div className='help-wire'>
                         <FakeWire keyData='A' value='D' /> 
                     </div>
-                    <p>Above is an example of a wire. The plugboard has ten different wires, each of which will connect a letter to a different letter. These are chosen by using the dropdown menu.</p>
+                    <p>Above are two dropdown menus, together they are an example of a wire. The plugboard has ten different wires, each of which will connect a letter to a different letter. These are chosen by using the dropdown menu.</p>
                     <p>For example if you were to input the letter 'A' to the Enigma machine, before it beings encoding the letter, it would see that 'A' is connected to 'D' and use 'D' for its encoding instead.</p>
                     <p>This behavior adds extra complexity to the Enigma machine and makes it more difficult to decipher.</p>
                 </div>
@@ -34,6 +34,8 @@ export default function Help() {
             <section className='help-section'>
                 <h2>Using the machine</h2>
                 <p>The input field is where you will type your message to encrypt/decrypt. Between the input and output fields there is a button that will allow you to switch between encryption mode and decryption mode, it displays the current mode. The output field will be the final message either encrypted or decrypted.</p>
+                <p>To encrypt something first make sure your button reads "Encrypt Mode". Also ensure the settings are set to those you wish to use. Then type in plain text what you wish to encrypt.</p>
+                <p>To decrypt something first make sure your button reads "Decrypt Mode". You must also be sure to use the same settings that were used when the message was encrypted. If you don't use the correct settings the message will be decrypted as nonsense. Then place an already encrypted message in the input field for the machine to decrypt.</p>
                 <p>Below the Input/Output section there are either one or two buttons depending on whether you are logged in or not. The reset button will reset the enigma machine back to its original state. The Save button will only appear if you are logged in and will save the current settings as a new cipher under the "Saved Ciphers" tab.</p>
                 <p>Your saved ciphers are Located under the "Saved Ciphers" tab which is found at the top of your screen. Each saved cipher can be re-used by hitting the "Use" button or deleted by hitting the "Delete" button.</p>
             </section>

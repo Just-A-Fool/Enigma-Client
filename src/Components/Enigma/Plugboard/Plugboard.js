@@ -31,7 +31,7 @@ export default class Plugboard extends React.Component {
         }
         return (
             <div>
-                <p>Plug-board</p>
+                <p>Plugboard</p>
                 <div className="plugboard-container">
                     {wires}
                 </div>
